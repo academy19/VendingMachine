@@ -26,5 +26,6 @@ object Application {
     )
 
     val userSelectionCode = readLine("Enter desired selection code")
+    val price = vm.getPrice(userSelectionCode)
   }
 }
