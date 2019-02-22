@@ -1,3 +1,5 @@
+import scala.io.StdIn.readLine
+
 object Application {
 
   val products =  List (
@@ -14,13 +16,15 @@ object Application {
     Crisps(80, "B6", "Wotsits")
   )
 
-  def main(args : Array[String]) : Unit = {
-    val vm = new VendingMachine(products)
+  val initialInventory = products.map(product => (product.selectionCode, 6)).toMap
 
-    vm.getProducts().foreach(product =>
-      println(s"${product.name} ${product.price}p ${product.selectionCode}")
+  def main(args : Array[String]) : Unit = {
+    val vm = new VendingMachine(products, initialInventory)
+
+    vm.getProducts()
+      .foreach(product => println(s"${product.name} ${product.price}p ${product.selectionCode}")
     )
 
-    println("What do you want?!!!")
+    val userSelectionCode = readLine("Enter desired selection code")
   }
 }
