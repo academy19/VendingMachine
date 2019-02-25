@@ -21,13 +21,18 @@ object Application {
   def main(args : Array[String]) : Unit = {
     val vm = new VendingMachine(products, initialInventory)
 
-    vm.getProducts()
+    vm.listAvailableProducts()
       .foreach(product => println(s"${product.name} ${product.price}p ${product.selectionCode}")
     )
 
     val userSelectionCode = readLine("Enter desired selection code")
-    val price = vm.getPrice(userSelectionCode)
+    val productUserHasChosen = vm.getAProductIfInStock(userSelectionCode)
 
-    println(s"$price")
+    productUserHasChosen match {
+      case Left(value) => println (s"You have selected ${value.name} and this costs ${value.price}p")
+      case _ => println ("Not available")
+    }
+
+
   }
 }

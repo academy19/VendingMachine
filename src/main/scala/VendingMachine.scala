@@ -13,16 +13,16 @@ class VendingMachine(availableProducts : List[Product], stockLevel : Map[String,
     }
   }
 
-  def getPrice(selectionCode: String) : Either[Int,String] = {
+  def getAProductIfInStock(selectionCode: String) : Either[Product,String] = {
 
     if (checkIfProductIsInStock(selectionCode)) {
       findProduct(selectionCode) match {
-        case Some(x) => Left(x.price)
+        case Some(x) => Left(x)
         case _ => Right("None Available")
       }
     }
     else Right("Not in Stock")
   }
 
-  def getProducts(): List[Product] = availableProducts
+  def listAvailableProducts(): List[Product] = availableProducts
 }
