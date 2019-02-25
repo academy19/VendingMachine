@@ -1,6 +1,8 @@
+import scala.annotation.tailrec
+
 class VendingMachine(availableProducts : List[Product], stockLevel : Map[String, Int]) {
 
-  val validCoins: List[Int] = List(1, 2, 5, 10, 20, 50, 100, 200)
+  val validCoins: List[Int] = List(1, 2, 5, 10, 20, 50, 100, 200).reverse
 
   def listAvailableProducts(): List[Product] = availableProducts
 
@@ -44,7 +46,19 @@ class VendingMachine(availableProducts : List[Product], stockLevel : Map[String,
     else if (totalUserCoins < priceOfProduct)
       Left(s"Insufficient funds. Please insert ${priceOfProduct - totalUserCoins}p more.")
 
-    else Left(???)
+    else Right(calculateOptimumChange(totalUserCoins - priceOfProduct))
 
+  }
+
+  private def calculateOptimumChange(changeDue : Int, currentChange : List[Int] = Nil) : List[Int] = {
+
+    if (changeDue > 0) {
+
+      val firstChangeCoin = validCoins.filter(_ <= changeDue).head
+      val newChangeDue = changeDue - firstChangeCoin
+
+      calculateOptimumChange(newChangeDue, firstChangeCoin :: currentChange)
+    }
+    else currentChange
   }
 }
