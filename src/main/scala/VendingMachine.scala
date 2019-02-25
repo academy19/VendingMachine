@@ -1,6 +1,10 @@
 class VendingMachine(availableProducts : List[Product], stockLevel : Map[String, Int]) {
 
-  def findProduct(code : String): Option[Product]={
+  val validCoins: List[Int] = List(1, 2, 5, 10, 20, 50, 100, 200)
+
+  def listAvailableProducts(): List[Product] = availableProducts
+
+  private def findProduct(code : String): Option[Product]= {
     availableProducts.find(a => a.selectionCode == code)
   }
 
@@ -13,16 +17,34 @@ class VendingMachine(availableProducts : List[Product], stockLevel : Map[String,
     }
   }
 
-  def getAProductIfInStock(selectionCode: String) : Either[Product,String] = {
+  def getAProductIfInStock(selectionCode: String) : Either[String, Product] = {
 
     if (checkIfProductIsInStock(selectionCode)) {
       findProduct(selectionCode) match {
-        case Some(x) => Left(x)
-        case _ => Right("None Available")
+        case Some(product) => Right(product)
+        case _ => Left("Product doesn't exist")
       }
     }
-    else Right("Not in Stock")
+    else Left("Not in Stock")
   }
 
-  def listAvailableProducts(): List[Product] = availableProducts
+  private def ifCoinsInvalid (userCoins: List[Int]): Boolean = {
+
+    !userCoins.forall(coin => validCoins.contains(coin))
+  }
+
+  def payAndGiveChange (userCoins: List[Int], priceOfProduct: Int): Either[String, List[Int]] = {
+
+    val totalUserCoins = userCoins.sum
+
+    if (ifCoinsInvalid(userCoins)) Left("Invalid coin(s)")
+
+    else if (totalUserCoins == priceOfProduct) Right(Nil)
+
+    else if (totalUserCoins < priceOfProduct)
+      Left(s"Insufficient funds. Please insert ${priceOfProduct - totalUserCoins}p more.")
+
+    else Left(???)
+
+  }
 }
